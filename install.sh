@@ -21,13 +21,23 @@ ask_network_connection() {
             echo -e "${BOLD}Starting WiFi connection setup...${NORMAL}"
             echo -e "Listing available WiFi devices..."
             iwctl device list
-            read -p "Enter the device name you wish to connect with (e.g., wlan0): " wifi_device
+            local wifi_device
+            while true; do
+                read -p "Enter the device name you wish to connect with (e.g., wlan0): " wifi_device
+                if iwctl device list | grep -q "$wifi_device"; then
+                    break
+                else
+                    echo -e "${RED}Device not found. Please enter a valid device name from the list above.${NC}"
+                fi
+            done
             echo -e "Scanning for WiFi networks..."
-            iwctl station $wifi_device scan
+            iwctl station "$wifi_device" scan
             echo -e "Listing available networks..."
-            iwctl station $wifi_device get-networks
+            iwctl station "$wifi_device" get-networks
             read -p "Enter the SSID of the WiFi network you wish to connect to: " wifi_ssid
-            iwctl --passphrase prompt station $wifi_device connect "$wifi_ssid"
+            read -sp "Enter the WiFi password: " wifi_password
+            echo
+            iwctl --passphrase "$wifi_password" station "$wifi_device" connect "$wifi_ssid"
             ;;
         2)
             echo -e "${BOLD}Proceeding with Ethernet connection...\n${NORMAL}"
