@@ -19,15 +19,15 @@ ask_network_connection() {
     case $network_choice in
         1)
             echo -e "${BOLD}Starting WiFi connection setup...${NORMAL}"
-            echo -e "Listing available WiFi devices..."
-            iwctl device list
             local wifi_device
+            local device_check_output
             while true; do
-                read -p "Enter the device name you wish to connect with (e.g., wlan0): " wifi_device
-                if iwctl device list | grep -q "$wifi_device"; then
-                    break
+                read -p "Enter the device name you wish to connect with (e.g., wlan0): " wifi_device                
+                device_check_output=$(iwctl station "$wifi_device" show 2>&1)
+                if [[ $device_check_output == *"Device $wifi_device not found"* ]]; then
+                    echo -e "${RED}Device not found. Please enter a valid device name.${NC}"
                 else
-                    echo -e "${RED}Device not found. Please enter a valid device name from the list above.${NC}"
+                    break
                 fi
             done
             echo -e "Scanning for WiFi networks..."
