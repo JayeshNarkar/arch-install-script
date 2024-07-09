@@ -1,5 +1,13 @@
 #!/bin/bash
 
+LOG_FILE="log.txt"
+
+starting_index=1
+
+if [ -f "$LOG_FILE" ]; then
+    starting_index=$(cat "$LOG_FILE")
+fi
+
 BLUE='\033[0;34m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -7,10 +15,27 @@ NC='\033[0m'
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
 
-echo -e "${BOLD}${GREEN}Welcome to Jayesh's Arch Linux install script!${NORMAL}${NC}\n"
+update_status() {
+    echo "$1" > $LOG_FILE
+}
+
+print_seperator(){
+     printf '%.0s-' {1..50}
+    echo -e "\n${BLUE}$1${NORMAL}${NC}\n"
+}
+
+print_slow_message(){        
+    message="$1"
+    color=${2^^} 
+    echo -e "${!color}"
+    for word in $message; do
+        echo -n "$word "  
+        sleep 0.5 
+    done
+    echo -e "${NORMAL}${NC}\n"
+}
 
 ask_network_connection() {
-    echo -e "${BOLD}${BLUE}Network Connection Setup${NORMAL}${NC}"
     echo -e "Do you need to connect to WiFi, or are you already connected via Ethernet?"
     echo -e "1) Connect to WiFi using iwctl"
     echo -e "2) Already connected via Ethernet"
@@ -65,7 +90,7 @@ prompt_installation() {
     
     echo -e "\n${GREEN}$package_description${NC}"
 
-    echo -n -e "\nDo you wish to go through with its installation? ${necessity_color}(${package_necessity})${NC} (y/n): "
+    echo -n -e "${BOLD}\nDo you wish to go through with its installation? ${necessity_color}(${package_necessity})${NC} (y/n): "
     local answer
     read answer
     answer="${answer,,}"
@@ -77,7 +102,7 @@ prompt_installation() {
                 sudo pacman -S "$package_name" --noconfirm
                 break ;;
             n | no)
-                echo -e "${BOLD}Skipping $package_name installation...${NORMAL}"
+                echo -e "${BOLD}Skipping $package_name installation...${NORMAL}\n"
                 break ;;
             *)
                 read -rp "Please enter 'y' or 'n': " answer ;;
@@ -85,8 +110,38 @@ prompt_installation() {
     done
 }
 
-ask_network_connection
+prompt_exit() {
+  while true; do
+    echo -e "$1${NORMAL} (y/n) "
+    read answer
+    case $answer in
+      [Yy]* ) break;;
+      [Nn]* ) echo -e "\n$2"
+      echo -e "${BOLD}\nExiting script.${NORMAL}"; exit;;
+      * ) echo "Please answer y or n.";;
+    esac
+  done
+}
 
-prompt_installation "archlinux-keyring" "The archlinux-keyring package is fundamental to the security model of Arch Linux, ensuring that you can trust the packages you install from the official repositories." "recommended"
+function1(){
+    print_slow_message "Welcome to Jayesh's Arch Linux install script!" "green"
+}
 
+function2(){
+    print_seperator "Network Connection Setup"
+    ask_network_connection
+}
 
+function3(){
+    prompt_installation "archlinux-keyring" "The archlinux-keyring package is fundamental to the security model of Arch Linux, ensuring that you can trust the packages you install from the official repositories." "recommended"
+}
+
+function4(){
+    print_seperator "Storage Allocation"
+    prompt_exit "The minimum space required for the following types of installs is given below (feel free to free up more than that if you see fit): \n•Minimal (no desktop environment): 11 GB \n•GNOME or KDE Desktop Environment: 41 GB \n•Wayland Desktop Enviornment: 41 GB \n\nAlso do note that this does not include the swap partition size required (which is recommended to be the same size as your actual ram).\nSwap space is optional but beneficial, enhancing system performance by providing additional virtual memory when RAM is full.\n\nSo if you have 8GB ram free up 41GB (for xfce/kde/wayland) + 8GB (for swap) = 49GB\n\n${BOLD}Have you free'd up space on one of the storage devices connected to the system?" "Go ahead and do so in your windows OS (if you are setting up a dual boot) or use the cfdisk command provided by the arch installer in the current terminal that you are in.\nAlso this arch install script will start from here again instead of starting from the start so....you're welcome!"
+}
+
+for index in `seq $starting_index 4`; do
+    update_status $index
+    function${index} 
+done 
