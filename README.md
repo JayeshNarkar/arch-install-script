@@ -10,7 +10,7 @@ It can also be used to quickly setup an OS install.
 
 1. Creating a arch install boot loader.
 
-<img src="image-1.png" alt="image_showing_arch_loader" height="250">
+<img src="images/image-1.png" alt="image_showing_arch_loader" height="250">
 
 2. Freeing up space
 
@@ -40,11 +40,11 @@ git clone https://github.com/JayeshNarkar/arch-install-script.git
 
 1. Boot into the pendrive (where arch installer is loaded into)
 
-<img src="image.png" alt="image_showing_arch_loader" height="200">
+<img src="images/image.png" alt="image_showing_arch_loader" height="200">
 
 2. List storage devices and identify the pendrive
 
-<img src="lsblk_result.jpg" alt="image_showing_arch_loader" height="150">
+<img src="images/lsblk_result.jpg" alt="image_showing_arch_loader" height="150">
 
 ```
 lsblk
@@ -56,7 +56,7 @@ lsblk
 
 3. Mount the pendrive's partition to a folder
 
-<img src="mounting_pendrive.jpg" alt="image_showing_arch_loader" height="100">
+<img src="images/mounting_pendrive.jpg" alt="image_showing_arch_loader" height="100">
 
 ```
 mkdir /mnt/pendrive
@@ -66,7 +66,7 @@ ls /mnt/pendrive
 
 4. Change the directory the pendrive's and make the script executable
 
-<img src="making_executable.jpg" alt="image_showing_arch_loader" height="80">
+<img src="images/making_executable.jpg" alt="image_showing_arch_loader" height="80">
 
 ```
 cd /mnt/pendrive/arch-install-script/
