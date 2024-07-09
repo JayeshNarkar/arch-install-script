@@ -2,18 +2,18 @@
 
 LOG_FILE="log.txt"
 
-starting_index=1
-
-if [ -f "$LOG_FILE" ]; then
-    starting_index=$(cat "$LOG_FILE")
-fi
-
 BLUE='\033[0;34m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
+
+starting_index=1
+
+if [ -f "$LOG_FILE" ]; then
+    starting_index=$(cat "$LOG_FILE")
+fi
 
 update_status() {
     echo "$1" > $LOG_FILE
@@ -138,7 +138,7 @@ function3(){
 
 function4(){
     print_seperator "Storage Allocation"
-    prompt_exit "The minimum space required for the following types of installs is given below (feel free to free up more than that if you see fit): \n•Minimal (no desktop environment): 11 GB \n•GNOME or KDE Desktop Environment: 41 GB \n•Wayland Desktop Enviornment: 41 GB \n\nAlso do note that this does not include the swap partition size required (which is recommended to be the same size as your actual ram).\nSwap space is optional but beneficial, enhancing system performance by providing additional virtual memory when RAM is full.\n\nSo if you have 8GB ram free up 41GB (for xfce/kde/wayland) + 8GB (for swap) = 49GB\n\n${BOLD}Have you free'd up space on one of the storage devices connected to the system?" "Go ahead and do so in your windows OS (if you are setting up a dual boot) or use the cfdisk command provided by the arch installer in the current terminal that you are in.\nAlso this arch install script will start from here again instead of starting from the start so....you're welcome!"
+    prompt_exit "Have you free'd up space on one of the storage devices connected to the system?" "Go ahead and do so in your windows OS (if you are setting up a dual boot) or use the cfdisk command provided by the arch installer in the current terminal that you are in.\nAlso this arch install script will start from here again instead of starting from the start so....you're welcome!"
 }
 
 for index in `seq $starting_index 4`; do
