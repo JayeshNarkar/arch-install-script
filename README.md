@@ -112,9 +112,9 @@ ping -c 1 google.com
 
 How to create the 3 partitions and give them types:
 
-<video controls src="arch-screen0.mp4" title="making partitions" height="500"></video>
+https://github.com/JayeshNarkar/arch-install-script/assets/141546762/9276cdaf-1fa8-4382-a524-7a9705c751e1
 
-- Here the 800M partition is given type efi syste, since boot/efi partition requires 500-800M
+- Here the 800M partition is given type efi system, since boot/efi partition requires 500-800M
 
 - The 8G partition is given type linux swap because thats the size of my ram on VM. And its type is given linux swap
 

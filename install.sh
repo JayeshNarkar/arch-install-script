@@ -255,7 +255,9 @@ function6(){
 
     genfstab -U /mnt >> /mnt/etc/fstab
 
-    prompt_exit "\n\nThe arch minimal package installation is done and now we will enter the arch environment using chroot. \n\nThis script will only assist you so far, so clone part 2 of this script from the repo again after entering the root environment. \n\nCommand for cloning: \"git clone https://github.com/JayeshNarkar/arch-install-script.git\". Wish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
+    prompt_exit "\n\nThe arch minimal package installation is done and now we will enter the arch environment using chroot.  \n\nPart 2 of this script will be copied to your new environment. Run the following command once entering the root environment: \n\nchmod +x part2.sh\n./part2.sh \n\nWish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
+
+    mv part2.sh /mnt
 
     arch-chroot /mnt
 }
