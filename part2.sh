@@ -83,3 +83,39 @@ prompt_exit() {
     esac
   done
 }
+
+function1(){
+    print_seperator "Setting root password And creating user"
+    echo -e "${BOLD}Time to set a new password for root\n${NORMAL}"
+    passwd
+    prompt_exit "Were you successful in setting the password?" "Restart the script"
+
+    echo -e "Do you wish to create a new user? (for yourself if you didnt already create one) (y/n) "
+    read answer 
+
+    if [[ $answer == "y" || $answer == "Y" ]]; then
+        while true; do
+            echo -e "Enter a username: "
+            read user_name
+            echo -e "\nAre you sure you want the user's username to be: $user_name? (y/n)"
+            read confirmation
+            if [[ $confirmation == "y" || $confirmation == "Y" ]]; then
+                if useradd -m -g users -G wheel,storage,video,audio -s /bin/bash "${user_name}"; then
+                    echo "User ${user_name} added successfully."
+                    echo -e "\nNow lets set a password for the user"
+                    passwd ${user_name}
+                    break
+                else
+                    echo "Failed to add user ${user_name}. Please try again."
+                fi
+            else
+                echo -e "Let's try again."
+            fi
+        done
+    fi
+}
+
+for index in `seq $starting_index 1`; do
+    update_status $index
+    function${index} 
+done 
