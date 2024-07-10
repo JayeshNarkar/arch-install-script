@@ -44,6 +44,7 @@ ask_network_connection() {
     case $network_choice in
         1)
             echo -e "${BOLD}Starting WiFi connection setup...${NORMAL}"
+	    iwctl station list
             local wifi_device
             local device_check_output
             while true; do
@@ -60,11 +61,11 @@ ask_network_connection() {
             echo -e "Listing available networks..."
             iwctl station "$wifi_device" get-networks
             read -p "Enter the SSID of the WiFi network you wish to connect to: " wifi_ssid
-            read -sp "Enter the WiFi password: " wifi_password
-            echo
-            iwctl --passphrase "$wifi_password" station "$wifi_device" connect "$wifi_ssid"
-            ;;
-        2)
+            iwctl station "$wifi_device" connect "$wifi_ssid"
+	    echo -e "\nThe setup will now artifically wait for 8 seconds. This is so wifi has time to connect."
+	    sleep 8
+	    ;;
+	2)
             echo -e "${BOLD}Proceeding with Ethernet connection...\n${NORMAL}"
             ;;
         *)
@@ -72,6 +73,12 @@ ask_network_connection() {
             ask_network_connection
             ;;
     esac
+    local result
+    result="$(ping -c 1 google.com | grep "1 received")"
+    if [ -z "$result" ]; then 
+	    echo -e "\nExiting script since you havent connected to internet. Either re-plug your ethernet and try after waiting. Or re-connect to wifi by restarting the script."
+	    exit
+    fi	    
 }
 
 prompt_installation() {
