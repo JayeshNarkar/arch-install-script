@@ -109,3 +109,13 @@ ping -c 1 google.com
 ```
 
 <img src="images/ping_result.png" alt="image_showing_arch_loader" height="150">
+
+How to create the 3 partitions and give them types:
+
+<video controls src="arch-screen0.mp4" title="making partitions" height="500"></video>
+
+- Here the 800M partition is given type efi syste, since boot/efi partition requires 500-800M
+
+- The 8G partition is given type linux swap because thats the size of my ram on VM. And its type is given linux swap
+
+- The rest of the free space is given to root and its type is correct by default for file system.
