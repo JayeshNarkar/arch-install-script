@@ -91,3 +91,21 @@ This script utilizes a log.txt file to keep track of how many steps have already
 But if something goes wrong incase of error in previous step.
 
 Feel free to delete the log file so that the script starts from first step again.
+
+## Reference
+
+How your partitions should look like after mounting and partioning:
+
+```
+lsblk
+```
+
+<img src="images/lsblk_after.png" alt="image_showing_arch_loader" height="200">
+
+How to check for network connectivity:
+
+```
+ping -c 1 google.com
+```
+
+<img src="images/ping_result.png" alt="image_showing_arch_loader" height="150">

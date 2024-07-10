@@ -99,7 +99,7 @@ prompt_installation() {
         case "$answer" in 
             y | yes | "")
                 echo -e "${BOLD}Installing $package_name package...${NORMAL}"
-                sudo pacman -S "$package_name" --noconfirm
+                sudo pacman -Sy "$package_name" --noconfirm
                 break ;;
             n | no)
                 echo -e "${BOLD}Skipping $package_name installation...${NORMAL}\n"
@@ -123,6 +123,46 @@ prompt_exit() {
   done
 }
 
+show_steps_for_making_partitions(){
+    echo -e "\nThis next step requires some human intervention since identifying and creating partitions through a script is a tough task. But here are some steps to guide you through it:"
+    sleep 2
+
+    echo -e "\nStep 1. Identify the storage device you want to make the partitions on."
+    sleep 2
+
+    echo -e "\nStep 2. When prompted enter its name (nvme0n1,sda)"
+    sleep 2
+    
+    echo -e "\nStep 3. in the menu displayed there will be a section called free space and it will be in green. If you dont see it that means you either forgot to do what was instructed in the previous step. (to free up space) Or you just selected the wrong storage device"
+
+    sleep 2
+
+    echo -e "\nStep 4. Create 2-3 partitions. for boot and root (and swap (optional but highly recommended))"
+
+    sleep 2
+
+    echo -e "\nHere are some info on the partitions and the sizes you should give them:"
+    sleep 2
+
+    echo -e "\n1. Efi/boot: 500-800M (mb is M in that menu)"
+    sleep 2
+    
+    echo -e "\n2. Swap: 8G or 16G or however much your ram is(gb is G in that menu)"    
+    sleep 2
+
+    echo -e "\n3. Root: Rest of the remaining free space"    
+    sleep 2
+
+    echo -e "A video showing how to create these can also be found in the github repo of this script."    
+    sleep 2
+
+    echo -e "\nUse the arrow keys <- and -> to move from one option to another"
+    sleep 2
+
+    echo -e "\nStep 6. Go to the write button and press enter. Which should exit that menu and script will start running again!"
+    sleep 2
+}
+
 function1(){
     print_slow_message "Welcome to Jayesh's Arch Linux install script!" "green"
 }
@@ -141,7 +181,78 @@ function4(){
     prompt_exit "Have you free'd up space on one of the storage devices connected to the system?" "Go ahead and do so in your windows OS (if you are setting up a dual boot) or use the cfdisk command provided by the arch installer in the current terminal that you are in.\nAlso this arch install script will start from here again instead of starting from the start so....you're welcome!"
 }
 
-for index in `seq $starting_index 4`; do
+function5(){
+    local answer
+    echo -e "\nDo you wish to see the steps to make the partitions?(y/n) "
+    read answer
+     if [[ $answer == "y" || $answer == "Y" ]]; then
+        show_steps_for_making_partitions
+    fi
+
+    echo -e "\nHave you already created the partitions?(y/n) "
+    read answer
+    if [[ $answer == "n" || $answer == "N" ]]; then
+        lsblk
+        sleep 1
+        echo -e "\n\nWhats the name of the storage device where you wish to install arch?(nvme0n1, sda) "
+        read storage_device_for_partitions
+        cfdisk /dev/${storage_device_for_partitions}
+    fi
+
+    echo -e "\nDid you create the 3 partitions?(y/n) "
+    read answer
+     if [[ $answer == "n" || $answer == "N" ]]; then
+        echo -e "Exiting script. Restart the script by typing ./install.sh. It should restart from the same step as you left"
+    else
+        echo -e "\Continuing..."
+     fi
+
+     echo -e "Enter the root partition (sda2, nvme0n1p3, or something) "
+     read root_partition
+     mkfs.ext4 /dev/${root_partition}
+     mount /dev/${root_partition} /mnt
+
+     echo -e "Enter the efi partition name (sda1, nvme0n1p2, or something): "
+     read efi_partition
+     mkdir /mnt/boot
+     mkfs.fat -F32 /dev/${efi_partition}
+     mount /dev/${efi_partition} /mnt/boot
+
+     echo -e "Do you have a swap partition?(y/n) "
+     read answer
+     if [[ $answer == "y" || $answer == "Y" ]]; then
+        echo -e "Enter the swap partition (sda2, nvme0n1p3, or something) "
+        read swap_partition
+        mkswap /dev/${swap_partition}
+        swapon /dev/${swap_partition}
+     fi
+}
+
+# amd cargo mpv bluez bluez-utils
+
+function6(){
+    print_seperator "Pac Strapping"
+
+    prompt_exit "\nBefore proceeding, this is a final time asking if you are sure you made all 3 partitions properly with proper types and are connected to network.\nDo you wish to check once more by exiting the script?(y/n) " "Images of how your lsblk after partioning should be present in the repo. And to check your network connectivity use the command ping -c 1 google.com"
+
+    echo -e "Do you have intel or amd based cpu?(intel/amd) "
+    read cpu_type
+
+    if [[ $cpu_type != "intel" && $cpu_type != "amd" ]]; then
+        echo "Invalid CPU type. Exiting script."
+        exit 1
+    fi
+
+    pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc --noconfirm
+
+    genfstab -U /mnt >> /mnt/etc/fstab
+
+    prompt_exit "The arch minimal package installation is done and now we will enter the arch environment using chroot. This script will only assist you so far, so clone part 2 of this script from the repo again after entering the root environment. Command for cloning: \"git clone https://github.com/JayeshNarkar/arch-install-script.git\". Wish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
+
+    arch-chroot /mnt
+}
+
+for index in `seq $starting_index 5`; do
     update_status $index
     function${index} 
 done 
