@@ -213,7 +213,8 @@ function5(){
     else
         echo -e "\Continuing..."
      fi
-
+     
+     lsblk
      echo -e "Enter the root partition (sda2, nvme0n1p3, or something) "
      read root_partition
      mkfs.ext4 /dev/${root_partition}
@@ -240,7 +241,7 @@ function5(){
 function6(){
     print_seperator "Pac Strapping"
 
-    prompt_exit "\nBefore proceeding, this is a final time asking if you are sure you made all 3 partitions properly with proper types and are connected to network.\nDo you wish to check once more by exiting the script?(y/n) " "Images of how your lsblk after partioning should be present in the repo. And to check your network connectivity use the command ping -c 1 google.com"
+    prompt_exit "\nBefore proceeding, this is a final time asking if you are sure you made all 3 partitions properly with proper types and are connected to network.\nAre you sure you wish to continue?" "Images of how your lsblk after partioning should be present in the repo. And to check your network connectivity use the command ping -c 1 google.com"
 
     echo -e "Do you have intel or amd based cpu?(intel/amd) "
     read cpu_type
@@ -254,7 +255,7 @@ function6(){
 
     genfstab -U /mnt >> /mnt/etc/fstab
 
-    prompt_exit "The arch minimal package installation is done and now we will enter the arch environment using chroot. This script will only assist you so far, so clone part 2 of this script from the repo again after entering the root environment. Command for cloning: \"git clone https://github.com/JayeshNarkar/arch-install-script.git\". Wish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
+    prompt_exit "\n\nThe arch minimal package installation is done and now we will enter the arch environment using chroot. \n\nThis script will only assist you so far, so clone part 2 of this script from the repo again after entering the root environment. \n\nCommand for cloning: \"git clone https://github.com/JayeshNarkar/arch-install-script.git\". Wish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
 
     arch-chroot /mnt
 }
