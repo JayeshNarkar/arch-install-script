@@ -84,7 +84,7 @@ chmod +x install.sh
 
 - Resumable: Picks up from the last completed step after exit.
 
-# Logging
+## Logging
 
 This script utilizes a log.txt file to keep track of how many steps have already been executed and how many are left. It is recommended that you do not change any contents of this file unnecessarily.
 
