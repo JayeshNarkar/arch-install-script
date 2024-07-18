@@ -257,6 +257,7 @@ function5(){
     read answer
      if [[ $answer == "n" || $answer == "N" ]]; then
         echo -e "Exiting script. Restart the script by typing ./install.sh. It should restart from the same step as you left"
+        exit
     else
         echo -e "\Continuing..."
      fi
@@ -308,7 +309,7 @@ function7(){
 
     read -p "Do you want to install a desktop environment? (y/n): " answer
 
-    if [[ $answer != "n" ]]; then
+    if [[ $answer == "y" || $answer =="Y" ]]; then
         echo "Skipping to next step."
         return
     fi
