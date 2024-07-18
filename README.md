@@ -94,7 +94,7 @@ Feel free to delete the log file so that the script starts from first step again
 
 ## Reference
 
-How your partitions should look like after mounting and partioning:
+**How your partitions should look like after mounting and partioning:**
 
 ```
 lsblk
@@ -102,7 +102,7 @@ lsblk
 
 <img src="images/lsblk_after.png" alt="image_showing_arch_loader" height="200">
 
-How to check for network connectivity:
+**How to check for network connectivity:**
 
 ```
 ping -c 1 google.com
@@ -110,7 +110,7 @@ ping -c 1 google.com
 
 <img src="images/ping_result.png" alt="image_showing_arch_loader" height="150">
 
-How to create the 3 partitions and give them types:
+**How to create the 3 partitions and give them types:**
 
 https://github.com/JayeshNarkar/arch-install-script/assets/141546762/9276cdaf-1fa8-4382-a524-7a9705c751e1
 
