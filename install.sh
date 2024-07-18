@@ -184,7 +184,7 @@ show_steps_for_making_partitions(){
 }
 
 function install_desktop_environment() {
-    pacstrap -i /mnt noto-fonts noto-font-emoji ttf-dejavu ttf-font-awesome
+    pacstrap -i /mnt noto-fonts noto-font-emoji ttf-dejavu ttf-font-awesome --noconfirm
 
     while true; do
         echo "Select the desktop environment you want to install:"
@@ -196,18 +196,18 @@ function install_desktop_environment() {
         case $choice in
             1)
                 echo "Installing GNOME Desktop Environment."
-                pacstrap -i /mnt xorg gdm gnome gnome-extra
+                pacstrap -i /mnt xorg gdm gnome gnome-extra --noconfirm
                 echo -e 
                 break
                 ;;
             2)
                 echo "Installing KDE Plasma Desktop Environment."
-                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta
+                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta --noconfirm
                 break
                 ;;
             3)
                 echo "Installing XFCE Environment."
-                pacstrap -i /mnt  xfce4 xfce4-goodies lightdm lightdm-gtk-greeter
+                pacstrap -i /mnt  xfce4 xfce4-goodies lightdm lightdm-gtk-greeter --noconfirm
                 break
                 ;;
             *)
