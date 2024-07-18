@@ -309,7 +309,7 @@ function7(){
 
     read -p "Do you want to install a desktop environment? (y/n): " answer
 
-    if [[ $answer != "y" && $answer !="Y" ]]; then
+    if [[ $answer != "y" && $answer != "Y" ]]; then
         echo "Skipping to next step."
         return
     fi
