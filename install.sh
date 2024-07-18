@@ -130,6 +130,19 @@ prompt_exit() {
   done
 }
 
+prompt_skip() {
+  while true; do
+    echo -e "$1${NORMAL} (y/n) "
+    read answer
+    case $answer in
+      [Yy]* ) break;;
+      [Nn]* ) echo -e "\n$2"
+      echo -e "${BOLD}\Skipping ahead.${NORMAL}"; return;;
+      * ) echo "Please answer y or n.";;
+    esac
+  done
+}
+
 show_steps_for_making_partitions(){
     echo -e "\nThis next step requires some human intervention since identifying and creating partitions through a script is a tough task. But here are some steps to guide you through it:"
     sleep 2
@@ -168,6 +181,40 @@ show_steps_for_making_partitions(){
 
     echo -e "\nStep 6. Go to the write button and press enter. Which should exit that menu and script will start running again!"
     sleep 2
+}
+
+function install_desktop_environment() {
+    pacstrap -i /mnt noto-fonts noto-font-emoji ttf-dejavu ttf-font-awesome
+
+    while true; do
+        echo "Select the desktop environment you want to install:"
+        echo "1) GNOME"
+        echo "2) KDE"
+        echo "3) XFCE"
+        read -p "Enter your choice (1-3): " choice
+
+        case $choice in
+            1)
+                echo "Installing GNOME Desktop Environment."
+                pacstrap -i /mnt xorg gdm gnome gnome-extra
+                echo -e 
+                break
+                ;;
+            2)
+                echo "Installing KDE Plasma Desktop Environment."
+                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta
+                break
+                ;;
+            3)
+                echo "Installing XFCE Environment."
+                pacstrap -i /mnt  xfce4 xfce4-goodies lightdm lightdm-gtk-greeter
+                break
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                ;;
+        esac
+    done
 }
 
 function1(){
@@ -239,7 +286,7 @@ function5(){
 # cargo mpv bluez bluez-utils
 
 function6(){
-    print_seperator "Pac Strapping"
+    print_seperator "Installing Basic packages"
 
     prompt_exit "\nBefore proceeding, this is a final time asking if you are sure you made all 3 partitions properly with proper types and are connected to network.\nAre you sure you wish to continue?" "Images of how your lsblk after partioning should be present in the repo. And to check your network connectivity use the command ping -c 1 google.com"
 
@@ -253,16 +300,33 @@ function6(){
 
     pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc --noconfirm
 
-    genfstab -U /mnt >> /mnt/etc/fstab
+    genfstab -U /mnt >> /mnt/etc/fstab    
+}
 
-    prompt_exit "\n\nThe arch minimal package installation is done and now we will enter the arch environment using chroot.  \n\nPart 2 of this script will be copied to your new environment. Run the following command once entering the root environment: \n\nchmod +x part2.sh\n./part2.sh \n\nWish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
+function7(){
+    print_seperator "Installing a desktop environment"
+
+    read -p "Do you want to install a desktop environment? (y/n): " answer
+
+    if [[ $answer != "n" ]]; then
+        echo "Skipping to next step."
+        return
+    fi
+
+    install_desktop_environment
+}
+
+function8(){
+    print_seperator "Changing root environment"
+
+     prompt_exit "\n\nThe arch minimal package installation is done and now we will enter the arch environment using chroot.  \n\nPart 2 of this script will be copied to your new environment. Run the following command once entering the root environment: \n\nchmod +x part2.sh\n./part2.sh \n\nWish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
 
     mv part2.sh /mnt
 
     arch-chroot /mnt
 }
 
-for index in `seq $starting_index 6`; do
+for index in `seq $starting_index 8`; do
     update_status $index
     function${index} 
 done 

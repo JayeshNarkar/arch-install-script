@@ -18,7 +18,7 @@ The minimum space required for the following types of installs is given below (f
 
 - **Minimal (no desktop environment)**: 11 GB
 - **GNOME or KDE Desktop Environment**: 41 GB
-- **Wayland Desktop Enviornment**: 41 GB
+- **XFCE Desktop Enviornment**: 31 GB
 
 Also do note that this does not include the swap partition size required (which is recommended to be the same size as your actual ram).
 
