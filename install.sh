@@ -224,7 +224,6 @@ function install_desktop_environment() {
                 ;;
         esac
     done
-    sleep 5
 }
 
 function1(){
@@ -311,8 +310,7 @@ function6(){
         read country
         reflector --verbose --country "${country}" -l 10 --sort rate --save /etc/pacman.d/mirrorlist
      fi
-
-
+     
     echo -e "Do you have intel or amd based cpu?(intel/amd) "
     read cpu_type
 
