@@ -199,18 +199,12 @@ function5(){
 }
 
 function6(){
-    print_seperator "Setting up Grub bootloader"
-    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-    grub-mkconfig -o /boot/grub/grub.cfg
-}
-
-function7(){
     print_seperator "Enabling services"
     systemctl enable bluetooth
     systemctl enable NetworkManager    
 }
 
-for index in `seq $starting_index 7`; do
+for index in `seq $starting_index 6`; do
     update_status $index
     function${index} 
 done 
