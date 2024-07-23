@@ -304,6 +304,18 @@ function6(){
 
     prompt_exit "\nBefore proceeding, this is a final time asking if you are sure you made all 3 partitions properly with proper types and are connected to network.\nAre you sure you wish to continue?" "Images of how your lsblk after partioning should be present in the repo. And to check your network connectivity use the command ping -c 1 google.com"
 
+    echo -e "Do you wish to speedup your installation time using reflectors?(y/n) "
+    read answer
+     if [[ $answer == "y" || $answer == "Y" ]]; then
+        pacman -Sy reflector --noconfirm
+        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+        reflector --list-countries
+        echo -e "\nChoose a country where you live.(case-sensitive) "
+        read country
+        reflector --verbose --country '${country}' -l 5 --sort rate --save /etc/pacman.d/mirrorlist
+     fi
+
+
     echo -e "Do you have intel or amd based cpu?(intel/amd) "
     read cpu_type
 
