@@ -204,22 +204,19 @@ function install_desktop_environment() {
             1)
                 echo "Installing GNOME Desktop Environment."
                 pacstrap -i /mnt xorg gdm gnome gnome-extra --noconfirm
-                echo -e "after the script has finished running and after restarting when the normal OS terminal starts. Run the following command:"
-                echo -e "${BOLD}sudo systemctl enable gdm${NORMAL}"                
+                arch-chroot /mnt sudo systemctl enable gdm               
                 break
                 ;;
             2)
                 echo "Installing KDE Plasma Desktop Environment."
                 pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta flatpak --noconfirm
-                echo -e "after the script has finished running and after restarting when the normal OS terminal starts. Run the following command:"
-                echo -e "${BOLD}sudo systemctl enable sddm${NORMAL}"
+                arch-chroot /mnt sudo systemctl enable sddm
                 break
                 ;;
             3)
                 echo "Installing XFCE Environment."
                 pacstrap -i /mnt  xfce4 xfce4-goodies lightdm lightdm-gtk-greeter --noconfirm
-                echo -e "after the script has finished running and after restarting when the normal OS terminal starts. Run the following command:"
-                echo -e "${BOLD}sudo systemctl enable lightdm${NORMAL}"
+                arch-chroot /mnt sudo systemctl enable lightdm
                 break
                 ;;
             *)
@@ -312,7 +309,7 @@ function6(){
         reflector --list-countries
         echo -e "\nChoose a country where you live.(case-sensitive) "
         read country
-        reflector --verbose --country "${country}" -l 5 --sort rate --save /etc/pacman.d/mirrorlist
+        reflector --verbose --country "${country}" -l 10 --sort rate --save /etc/pacman.d/mirrorlist
      fi
 
 
