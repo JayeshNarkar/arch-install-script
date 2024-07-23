@@ -110,7 +110,7 @@ function1(){
 
                     echo -e "\n\nNow, we have added this new user to the wheel group and other groups. The Wheel group allows the user to access root privileges with a sudo command. For that, we need to edit the sudoers file. Type the below command\n\nReference can be found in the repo's readme"
 
-                    echo -e "\n\n${BOLD}EDITOR=nano visudo${NORMAL}"
+                    echo -e "\n\n${BOLD}%wheel ALL=(ALL:ALL) ALL${NORMAL}"
                     sleep 10
                     visudo                    
                     break
@@ -128,6 +128,16 @@ function2(){
     print_seperator "Setting up grub bootloader"
     grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
     grub-mkconfig -o /boot/grub/grub.cfg
+    echo -e "Do you also have windows or any other OS installed on your system?(y/n) "
+    read answer
+    if [[ $answer == "y" || $answer == "Y" ]]; then
+        sudo pacman -Sy os-prober --noconfirm
+        echo -e "Uncomment the following line in the file that will be opened in vim.\nReference can be found in github repo.\n\n${BOLD}GRUB_DISABLE_OS_PROBER=false${NORMAL}\n\nAlso set the grub timeout to a more suitable time like 20 seconds. Reference can again be found in repo\n\n${BOLD}GRUB_TIMEOUT=20${NORMAL}\n"
+        vim /etc/default/grub
+        grub-mkconfig -o /boot/grub/grub.cfg
+    else
+        echo "Skipping to next step."
+    fi
 }
 
 function3(){

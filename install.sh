@@ -312,7 +312,7 @@ function6(){
         reflector --list-countries
         echo -e "\nChoose a country where you live.(case-sensitive) "
         read country
-        reflector --verbose --country '${country}' -l 5 --sort rate --save /etc/pacman.d/mirrorlist
+        reflector --verbose --country "${country}" -l 5 --sort rate --save /etc/pacman.d/mirrorlist
      fi
 
 
