@@ -119,3 +119,11 @@ https://github.com/JayeshNarkar/arch-install-script/assets/141546762/9276cdaf-1f
 - The 8G partition is given type linux swap because thats the size of my ram on VM. And its type is given linux swap
 
 - The rest of the free space is given to root and its type is correct by default for file system.
+
+**Which visudo line is supposed to be uncommented:**
+
+![alt text](images/visudo.png)
+
+**Which locale is supposed to be uncommented (if english speaking user):**
+
+![alt text](images/locale_gen.png)

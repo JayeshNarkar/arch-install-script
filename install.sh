@@ -143,6 +143,13 @@ prompt_skip() {
   done
 }
 
+countdown() {
+    for i in $(seq $1 -1 1); do
+        echo -e "$i"
+        sleep 1
+    done
+}
+
 show_steps_for_making_partitions(){
     echo -e "\nThis next step requires some human intervention since identifying and creating partitions through a script is a tough task. But here are some steps to guide you through it:"
     sleep 2
@@ -197,17 +204,22 @@ function install_desktop_environment() {
             1)
                 echo "Installing GNOME Desktop Environment."
                 pacstrap -i /mnt xorg gdm gnome gnome-extra --noconfirm
-                echo -e 
+                echo -e "after the script has finished running and after restarting when the normal OS terminal starts. Run the following command:"
+                echo -e "${BOLD}sudo systemctl enable gdm${NORMAL}"                
                 break
                 ;;
             2)
                 echo "Installing KDE Plasma Desktop Environment."
-                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta --noconfirm
+                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta flatpak --noconfirm
+                echo -e "after the script has finished running and after restarting when the normal OS terminal starts. Run the following command:"
+                echo -e "${BOLD}sudo systemctl enable sddm${NORMAL}"
                 break
                 ;;
             3)
                 echo "Installing XFCE Environment."
                 pacstrap -i /mnt  xfce4 xfce4-goodies lightdm lightdm-gtk-greeter --noconfirm
+                echo -e "after the script has finished running and after restarting when the normal OS terminal starts. Run the following command:"
+                echo -e "${BOLD}sudo systemctl enable lightdm${NORMAL}"
                 break
                 ;;
             *)
@@ -215,6 +227,7 @@ function install_desktop_environment() {
                 ;;
         esac
     done
+    sleep 5
 }
 
 function1(){
@@ -299,7 +312,7 @@ function6(){
         exit 1
     fi
 
-    pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc --noconfirm
+    pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc grub efibootmgr dosfstools mtools --noconfirm
 
     genfstab -U /mnt >> /mnt/etc/fstab    
 }
@@ -317,16 +330,28 @@ function7(){
 }
 
 function8(){
-    print_seperator "Changing root environment"
+    print_seperator "Changing root environments"
 
-     prompt_exit "\n\nThe arch minimal package installation is done and now we will enter the arch environment using chroot.  \n\nPart 2 of this script will be copied to your new environment. Run the following command once entering the root environment: \n\nchmod +x part2.sh\n./part2.sh \n\nWish to exit the script to perform some checks before entering? Or should we enter? (\"y\" to enter/ \"n\" to exit script) "
+    mv part2.sh /mnt/
 
-    mv part2.sh /mnt
+    chmod +x /mnt/part2.sh
 
-    arch-chroot /mnt
+    arch-chroot /mnt ./part2.sh
 }
 
-for index in `seq $starting_index 8`; do
+function9(){
+    print_seperator "Unmounting all partitions"
+    umount -lR /mnt
+}
+
+function10(){
+    print_seperator "Rebooting system"
+    countdown 5
+    reboot now 
+}
+
+for index in `seq $starting_index 10`; do
     update_status $index
     function${index} 
 done 
+

@@ -89,8 +89,7 @@ function1(){
     echo -e "${BOLD}Time to set a new password for root\n${NORMAL}"
     passwd
     prompt_exit "Were you successful in setting the password?" "Restart the script"
-
-    echo -e "Do you wish to create a new user? (for yourself if you didnt already create one) (y/n) "
+    echo -e "Do you wish to create a new user? (for yourself if you didn't already create one) (y/n) "
     read answer 
 
     if [[ $answer == "y" || $answer == "Y" ]]; then
@@ -102,8 +101,18 @@ function1(){
             if [[ $confirmation == "y" || $confirmation == "Y" ]]; then
                 if useradd -m -g users -G wheel,storage,video,audio -s /bin/bash "${user_name}"; then
                     echo "User ${user_name} added successfully."
-                    echo -e "\nNow lets set a password for the user"
-                    passwd ${user_name}
+                    
+                    echo -e "\nNow let's set a password for the user"
+                    while ! passwd ${user_name}; do
+                        echo -e "Password setup failed, please try again."
+                    done
+                    echo -e "\nPassword for user ${user_name} set successfully."
+
+                    echo -e "\n\nNow, we have added this new user to the wheel group and other groups. The Wheel group allows the user to access root privileges with a sudo command. For that, we need to edit the sudoers file. Type the below command\n\nReference can be found in the repo's readme"
+
+                    echo -e "\n\n${BOLD}EDITOR=nano visudo${NORMAL}"
+                    sleep 10
+                    visudo                    
                     break
                 else
                     echo "Failed to add user ${user_name}. Please try again."
@@ -115,7 +124,83 @@ function1(){
     fi
 }
 
-for index in `seq $starting_index 1`; do
+function2(){
+    print_seperator "Setting up grub bootloader"
+    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+    grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+function3(){
+    print_seperator "Setting up Timezone/Region"
+    echo -e "Do you wish to setup the timezone or skip it?(y to setup/n to skip) "
+    read answer
+    if [[ $answer == "y" || $answer == "Y" ]]; then
+        while true; do
+            ls /usr/share/zoneinfo/
+            echo -e "Enter a region name for your timezone (for example: Asia for most Asian countries including India): "
+            read outer_region
+            if [ ! -d "/usr/share/zoneinfo/${outer_region}" ]; then
+                echo "Invalid region. Please try again."
+                continue
+            fi
+
+            ls /usr/share/zoneinfo/${outer_region}
+            echo -e "Enter a city name for where your timezone is (for example: Kolkata for India): "
+            read inner_region
+            if [ ! -f "/usr/share/zoneinfo/${outer_region}/${inner_region}" ]; then
+                echo "Invalid city. Please try again."
+                continue
+            fi
+
+            ln -sf /usr/share/zoneinfo/${outer_region}/${inner_region} /etc/localtime
+            hwclock --systohc
+            echo "Timezone set to ${outer_region}/${inner_region}."
+            break
+        done
+    else
+        echo "Skipping to next step."
+    fi
+}
+
+function4(){
+    print_seperator "Setting up locale"
+    while true; do
+        echo -e "Uncomment ${BOLD}en_US.UTF-8${NORMAL} for english speaking users.\n\nReference can be found in github repo."
+        sleep 5
+
+        vim /etc/locale.gen
+        language_op=$(locale-gen | grep done | cut -d ' ' -f 3 | sed 's/\.\.\.$//')
+
+        if [ -z "$language_op" ]; then
+            echo "Error: Failed to identify the generated locale."
+            continue
+        fi
+
+        echo  "LANG=$language_op" > /etc/locale.conf
+        break
+    done
+     echo "Locale set to $language_op successfully."
+}
+
+function5(){
+    print_seperator "Setting up hosts"
+    echo "archlinux" >> /etc/hostname
+    echo "127.0.0.1        localhost\n:1:1        localhost\n127.0.1.1        archlinux.localdomain        archlinux" >> /etc/hosts
+}
+
+function6(){
+    print_seperator "Setting up Grub bootloader"
+    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+    grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+function7(){
+    print_seperator "Enabling services"
+    systemctl enable bluetooth
+    systemctl enable NetworkManager    
+}
+
+for index in `seq $starting_index 7`; do
     update_status $index
     function${index} 
 done 
