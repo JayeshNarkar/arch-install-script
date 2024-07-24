@@ -321,6 +321,20 @@ function6(){
 
     pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc grub efibootmgr dosfstools mtools --noconfirm
 
+    read -p "Do you have a Nvidia or Radeon GPU or neither? (nvidia/radeon/neither): " gpu_type
+
+    case $gpu_type in
+        [Nn]vidia)
+            pacstrap -i /mnt nvidia
+            ;;
+        [Rr]adeon)
+            pacstrap -i /mnt xf86-video-amdgpu
+            ;;
+        *)
+            echo "Skipping GPU specific steps."
+            ;;
+    esac
+
     genfstab -U /mnt >> /mnt/etc/fstab    
 }
 

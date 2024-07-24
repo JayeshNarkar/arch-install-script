@@ -28,11 +28,10 @@ So if you have 8GB ram free up 41GB (for xfce/kde/wayland) + 8GB (for swap) = 49
 
 ## Installation
 
-1. First clone the repository.
+1. First download the repo as zip
+   (cloning using "git clone" on windows or any other dos system wont work since it changes encoding)
 
-```
-git clone https://github.com/JayeshNarkar/arch-install-script.git
-```
+<img src="images/zip_download.png" alt="image_showing_arch_loader" height="200">
 
 2. Move the folder of the repo to your pendrive (which you have flashed arch installer iso on)
 
@@ -127,3 +126,7 @@ https://github.com/JayeshNarkar/arch-install-script/assets/141546762/9276cdaf-1f
 **Which locale is supposed to be uncommented (if english speaking user):**
 
 ![alt text](images/locale_gen.png)
+
+**Which grub line is supposed to be uncommented:**
+
+![alt text](images/grub.png)
