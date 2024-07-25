@@ -293,7 +293,7 @@ function5(){
      fi
 }
 
-# cargo mpv bluez bluez-utils
+# cargo mpv 
 
 function6(){
     print_seperator "Installing Basic packages"
@@ -321,7 +321,7 @@ function6(){
         exit 1
     fi
 
-    pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc grub efibootmgr dosfstools mtools --noconfirm
+    pacstrap -i /mnt base base-devel linux linux-headers linux-firmware ${cpu_type}-ucode sudo git nano vim neofetch htop networkmanager cmake make gcc grub efibootmgr dosfstools mtools bluez bluez-utils --noconfirm
 
     read -p "Do you have a Nvidia or Radeon GPU or neither? (nvidia/radeon/neither): " gpu_type
 
