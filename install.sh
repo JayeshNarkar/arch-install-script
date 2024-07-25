@@ -209,7 +209,7 @@ function install_desktop_environment() {
                 ;;
             2)
                 echo "Installing KDE Plasma Desktop Environment."
-                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta flatpak --noconfirm
+                pacstrap -i /mnt plasma-workspace xorg sddm plasma-meta flatpak konsole --noconfirm
                 arch-chroot /mnt sudo systemctl enable sddm
                 break
                 ;;
@@ -303,12 +303,14 @@ function6(){
     echo -e "Do you wish to speedup your installation time using reflectors?(y/n) "
     read answer
      if [[ $answer == "y" || $answer == "Y" ]]; then
-        pacman -Sy reflector --noconfirm
-        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
+        pacman -Sy reflector --noconfirm        
         reflector --list-countries
         echo -e "\nChoose a country where you live.(case-sensitive) "
         read country
+        cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
         reflector --verbose --country "${country}" -l 10 --sort rate --save /etc/pacman.d/mirrorlist
+        cp /mnt/etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist.bak
+        cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
      fi
      
     echo -e "Do you have intel or amd based cpu?(intel/amd) "
@@ -367,6 +369,8 @@ function9(){
 
 function10(){
     print_seperator "Rebooting system"
+    arch-chroot /mnt rm part2.sh 
+    arch-chroot /mnt rm log.txt
     countdown 5
     reboot now 
 }

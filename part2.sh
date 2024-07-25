@@ -204,7 +204,17 @@ function6(){
     systemctl enable NetworkManager    
 }
 
-for index in `seq $starting_index 6`; do
+function7(){
+    echo -e "Do you want to install yay? (an AUR manager) (AUR=arch user repositories) (y/n) "
+    read answer
+    if [[ $answer == "y" || $answer == "Y" ]]; then
+        pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si && cd .. && rm -R yay
+    else
+        echo "Skipping to next step."
+    fi
+}
+
+for index in `seq $starting_index 7`; do
     update_status $index
     function${index} 
 done 
