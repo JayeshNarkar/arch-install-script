@@ -191,7 +191,7 @@ show_steps_for_making_partitions(){
 }
 
 function install_desktop_environment() {
-    pacstrap -i /mnt noto-fonts noto-font-emoji ttf-dejavu ttf-font-awesome --noconfirm
+    pacstrap -i /mnt noto-fonts noto-font-emoji ttf-dejavu ttf-font-awesome firefox --noconfirm
 
     while true; do
         echo "Select the desktop environment you want to install:"
