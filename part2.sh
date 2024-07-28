@@ -195,7 +195,7 @@ function4(){
 function5(){
     print_seperator "Setting up hosts"
     echo "archlinux" >> /etc/hostname
-    echo "127.0.0.1        localhost\n:1:1        localhost\n127.0.1.1        archlinux.localdomain        archlinux" >> /etc/hosts
+    echo "127.0.0.1        localhost\n::1        localhost\n127.0.1.1        archlinux.localdomain        archlinux" >> /etc/hosts
 }
 
 function6(){
